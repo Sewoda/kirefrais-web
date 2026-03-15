@@ -27,11 +27,12 @@
               Découvrir nos kits
             </NuxtLink>
             <NuxtLink
-              to="#"
-              class="w-full sm:w-auto bg-white border-2 border-hero-green/20 text-hero-green hover:border-hero-green
-                     font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:bg-hero-green/5 text-center"
+              to="/assistant"
+              class="w-full sm:w-auto bg-white border-2 border-secondary/20 text-secondary hover:border-secondary
+                     font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:bg-secondary/5 text-center flex items-center justify-center gap-2"
             >
-              Comment ça marche ?
+              <Icon name="heroicons:sparkles" class="w-5 h-5" />
+              Essayer notre IA
             </NuxtLink>
           </div>
           
@@ -94,28 +95,7 @@
       </div>
     </section>
 
-    <!-- Pourquoi Kirefrais -->
-    <section class="page-container py-16">
-      <div class="text-center max-w-2xl mx-auto mb-12 px-4">
-        <h2 class="font-display font-bold text-2xl sm:text-3xl text-gray-900 mb-6 tracking-tight">
-          Pourquoi des milliers de foyers adorent Kirefrais
-        </h2>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-        <div v-for="benefit in benefits" :key="benefit.title" class="text-center group p-6 rounded-3xl hover:bg-white hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gray-50">
-          <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-hero-cream flex items-center justify-center mb-6 group-hover:bg-hero-green/10 transition-colors duration-300 transform group-hover:-rotate-6">
-             <Icon :name="benefit.icon" class="w-8 h-8 sm:w-10 sm:h-10 text-hero-green group-hover:scale-110 transition-transform duration-300" />
-          </div>
-          <h3 class="font-bold text-lg sm:text-xl text-gray-900 mb-3">{{ benefit.title }}</h3>
-          <p class="text-gray-500 text-sm font-medium leading-relaxed">{{ benefit.desc }}</p>
-        </div>
-      </div>
-      <div class="mt-12 text-center">
-        <NuxtLink to="/catalogue" class="inline-block bg-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/20">
-          Commencer maintenant
-        </NuxtLink>
-      </div>
-    </section>
+
 
     <!-- Le Dîner facile -->
     <section class="bg-white py-16 md:py-24 relative overflow-hidden">
@@ -179,6 +159,38 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Pourquoi Kirefrais (Moved & Compact) -->
+    <section class="page-container py-16">
+      <div class="text-center max-w-2xl mx-auto mb-12 px-4">
+        <h2 class="font-display font-bold text-2xl sm:text-3xl text-gray-900 mb-6 tracking-tight">
+          Pourquoi des milliers de foyers adorent Kirefrais
+        </h2>
+      </div>
+      
+      <!-- Desktop Grid / Mobile Compact 2x2 Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8 px-2 sm:px-0">
+        <div 
+          v-for="benefit in benefits" 
+          :key="benefit.title" 
+          class="flex flex-col items-center text-center group p-4 rounded-2xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300"
+        >
+          <div class="w-10 h-10 sm:w-20 sm:h-20 flex-shrink-0 mx-auto rounded-xl sm:rounded-2xl bg-hero-cream flex items-center justify-center mb-3 sm:mb-6 group-hover:bg-hero-green/10 transition-colors duration-300 transform group-hover:-rotate-6">
+             <Icon :name="benefit.icon" class="w-5 h-5 sm:w-10 sm:h-10 text-hero-green group-hover:scale-110 transition-transform duration-300" />
+          </div>
+          <div>
+            <h3 class="font-bold text-[11px] sm:text-lg md:text-xl text-gray-900 mb-1 sm:mb-3 leading-tight tracking-tight uppercase sm:normal-case">{{ benefit.title }}</h3>
+            <p class="hidden sm:block text-gray-500 text-xs sm:text-sm font-medium leading-relaxed">{{ benefit.desc }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-12 text-center">
+        <NuxtLink to="/catalogue" class="inline-block bg-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/20">
+          Commencer maintenant
+        </NuxtLink>
       </div>
     </section>
 

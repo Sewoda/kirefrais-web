@@ -18,47 +18,48 @@
     </div> -->
 
     <div class="grid lg:grid-cols-[260px_1fr] gap-6 h-[75vh]">
-
-      <!-- Historique (sidebar) -->
-      <aside class="hidden lg:flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-        <div class="p-4 border-b border-gray-100 flex items-center justify-between">
-          <h3 class="font-semibold text-gray-900 text-sm">Conversations</h3>
-          <button
-            class="text-xs text-primary font-medium hover:underline"
-            @click="aiStore.newConversation()"
-          >
-            + Nouvelle
-          </button>
-        </div>
-        <div class="flex-1 overflow-y-auto p-2 space-y-1">
-          <button
-            v-for="conv in aiStore.conversations" :key="conv.id"
-            :class="aiStore.conversationId === conv.id
-              ? 'bg-primary-light text-primary'
-              : 'text-gray-600 hover:bg-gray-50'"
-            class="w-full text-left px-3 py-2.5 rounded-xl text-sm transition-colors group relative"
-            @click="aiStore.loadConversation(conv.id)"
-          >
-            <p class="font-medium truncate pr-6">{{ conv.title }}</p>
-            <p class="text-xs opacity-60 mt-0.5">{{ conv.message_count }} messages</p>
-
-            <!-- Bouton supprimer -->
+      <template v-if="isLoggedIn">
+        <!-- Historique (sidebar) -->
+        <aside class="hidden lg:flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+          <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="font-semibold text-gray-900 text-sm">Conversations</h3>
             <button
-              class="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100
-                     text-gray-400 hover:text-red-500 transition-all"
-              title="Supprimer"
-              @click.stop="deleteConversation(conv.id)"
+              class="text-xs text-primary font-medium hover:underline"
+              @click="aiStore.newConversation()"
             >
-              <Icon name="heroicons:trash" class="w-3.5 h-3.5" />
+              + Nouvelle
             </button>
-          </button>
+          </div>
+          <div class="flex-1 overflow-y-auto p-2 space-y-1">
+            <button
+              v-for="conv in aiStore.conversations" :key="conv.id"
+              :class="aiStore.conversationId === conv.id
+                ? 'bg-primary-light text-primary'
+                : 'text-gray-600 hover:bg-gray-50'"
+              class="w-full text-left px-3 py-2.5 rounded-xl text-sm transition-colors group relative"
+              @click="aiStore.loadConversation(conv.id)"
+            >
+              <p class="font-medium truncate pr-6">{{ conv.title }}</p>
+              <p class="text-xs opacity-60 mt-0.5">{{ conv.message_count }} messages</p>
 
-          <p v-if="!aiStore.conversations.length"
-             class="text-xs text-gray-400 text-center py-8">
-            Aucune conversation
-          </p>
-        </div>
-      </aside>
+              <!-- Bouton supprimer -->
+              <button
+                class="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100
+                       text-gray-400 hover:text-red-500 transition-all"
+                title="Supprimer"
+                @click.stop="deleteConversation(conv.id)"
+              >
+                <Icon name="heroicons:trash" class="w-3.5 h-3.5" />
+              </button>
+            </button>
+
+            <p v-if="!aiStore.conversations.length"
+               class="text-xs text-gray-400 text-center py-8">
+              Aucune conversation
+            </p>
+          </div>
+        </aside>
+      </template>
 
       <!-- Chat -->
       <AiChat class="h-full" />
@@ -70,7 +71,7 @@
 import AiChat from '~/components/ai/AiChat.vue'
 import { toast } from 'vue-sonner'
 
-definePageMeta({ middleware: ['auth'] })
+// definePageMeta({ middleware: ['auth'] })
 
 useSeoMeta({
   title:       'Assistant KirefraisBot — Kirefrais',
@@ -78,10 +79,44 @@ useSeoMeta({
 })
 
 const aiStore = useAiStore()
+const { status } = useAuth()
+const isLoggedIn = computed(() => status.value === 'authenticated')
 
 onMounted(async () => {
-  await aiStore.loadConversations()
+  if (isLoggedIn.value) {
+    await aiStore.loadConversations()
+  }
 })
+
+const messageCount = ref(0)
+const MAX_GUEST_MESSAGES = 5
+
+// This sendMessage function is likely intended for the AiChat component.
+// For this file (the page), it would need to be passed down as a prop or
+// the AiChat component would need to expose a way to intercept message sending.
+// As per the instruction, it's added here, but note it won't directly
+// affect AiChat's internal message sending without further integration.
+// Assuming `inputMessage` and `scrollToBottom` would be defined or passed.
+/*
+async function sendMessage() {
+  // Limite pour les invités
+  if (status.value !== 'authenticated' && messageCount.value >= MAX_GUEST_MESSAGES) {
+    toast.error('Limite de messages atteinte. Connectez-vous pour continuer à discuter !')
+    return
+  }
+
+  const msg = inputMessage.value.trim()
+  if (!msg || aiStore.loading) return
+  inputMessage.value = ''
+  await aiStore.sendMessage(msg)
+
+  if (status.value !== 'authenticated') {
+    messageCount.value++
+  }
+
+  scrollToBottom()
+}
+*/
 
 async function deleteConversation(id: number) {
   try {

@@ -185,11 +185,27 @@ const suggestions = [
   '🥦 Légumes à privilégier',
 ]
 
+const messageCount = ref(0)
+const MAX_GUEST_MESSAGES = 5
+
 async function sendMessage() {
+  const { status } = useAuth()
+  
+  // Limite pour les invités
+  if (status.value !== 'authenticated' && messageCount.value >= MAX_GUEST_MESSAGES) {
+    toast.error('Limite de messages atteinte. Connectez-vous pour continuer à discuter !')
+    return
+  }
+
   const msg = inputMessage.value.trim()
   if (!msg || aiStore.loading) return
   inputMessage.value = ''
   await aiStore.sendMessage(msg)
+
+  if (status.value !== 'authenticated') {
+    messageCount.value++
+  }
+
   scrollToBottom()
 }
 
