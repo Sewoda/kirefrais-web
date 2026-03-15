@@ -12,6 +12,12 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
   ],
 
+  icon: {
+    serverBundle: {
+      collections: ['heroicons']
+    }
+  },
+
   devtools: { enabled: true },
 
   css: ['~/assets/css/main.css'],
