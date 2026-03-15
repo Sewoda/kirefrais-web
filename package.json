@@ -1,0 +1,52 @@
+{
+  "name": "Kirefrais-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.95",
+    "@iconify-json/simple-icons": "^1.2.72",
+    "@nuxt/icon": "^2.2.1",
+    "@nuxt/image": "latest",
+    "@nuxt/ui": "^4.5.1",
+    "@nuxtjs/google-fonts": "latest",
+    "@nuxtjs/icon": "latest",
+    "@pinia/nuxt": "latest",
+    "@sidebase/nuxt-auth": "latest",
+    "@tanstack/vue-table": "latest",
+    "@vee-validate/nuxt": "latest",
+    "@vee-validate/zod": "^4.15.1",
+    "@vueuse/core": "latest",
+    "@vueuse/nuxt": "latest",
+    "apexcharts": "latest",
+    "dayjs": "latest",
+    "jspdf": "latest",
+    "jspdf-autotable": "latest",
+    "laravel-echo": "latest",
+    "next-auth": "^4.24.11",
+    "nuxt": "^4.3.1",
+    "pinia": "latest",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "pusher-js": "latest",
+    "swiper": "latest",
+    "tailwindcss": "^4.2.1",
+    "vee-validate": "latest",
+    "vue-sonner": "latest",
+    "vue3-apexcharts": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.15.2",
+    "eslint": "^10.0.2",
+    "typescript": "^5.9.3",
+    "vue-tsc": "^3.2.5"
+  },
+  "packageManager": "pnpm@10.30.3"
+}
