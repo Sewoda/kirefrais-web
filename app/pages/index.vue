@@ -3,40 +3,40 @@
     <!-- Hero -->
     <section class="bg-hero-cream overflow-hidden">
       <div class="page-container py-8 lg:py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div class="z-10 text-center lg:text-left">
-          <h1 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-gray-900 leading-tight mb-6">
+        <div class="z-10 text-left">
+          <h1 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-gray-900 leading-tight mb-6 mt-4 md:mt-0">
             Cuisinez comme un chef avec des
             <span class="text-hero-green relative inline-block">
               ingrédients frais
-              <svg class="absolute -bottom-2 left-0 w-full hidden sm:block" viewBox="0 0 300 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg class="absolute -bottom-1 sm:-bottom-2 left-0 w-full block" viewBox="0 0 300 12" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height: 6px; sm:height: auto;">
                 <path d="M1 9.5C65.5 3.5 194.5 -2.5 299 9.5" stroke="#1B8A4A" stroke-width="3" stroke-linecap="round"/>
               </svg>
             </span>
             <br>togolais avec <span class="text-hero-orange">Kirefrais</span>
           </h1>
-          <p class="text-gray-600 text-base lg:text-lg mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
+          <p class="text-gray-600 text-base lg:text-lg mb-8 leading-relaxed max-w-lg">
             Recevez vos kits repas avec tous les ingrédients pré-dosés et les recettes illustrées.
             Cuisinez maison en 30 minutes, sans gaspillage.
           </p>
-          <div class="flex flex-wrap justify-center lg:justify-start gap-4">
+          <div class="flex flex-col sm:flex-row flex-wrap justify-start gap-4">
             <NuxtLink
               to="/catalogue"
               class="w-full sm:w-auto bg-hero-green hover:bg-hero-green-dark text-white font-bold
-                     px-8 py-4 rounded-xl transition-all duration-300 shadow-xl shadow-hero-green/20 hover:-translate-y-1 active:scale-95"
+                     px-8 py-4 rounded-xl transition-all duration-300 shadow-xl shadow-hero-green/20 hover:-translate-y-1 active:scale-95 text-center"
             >
               Découvrir nos kits
             </NuxtLink>
             <NuxtLink
               to="#"
               class="w-full sm:w-auto bg-white border-2 border-hero-green/20 text-hero-green hover:border-hero-green
-                     font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:bg-hero-green/5"
+                     font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:bg-hero-green/5 text-center"
             >
               Comment ça marche ?
             </NuxtLink>
           </div>
           
-          <div class="flex items-center justify-center lg:justify-start gap-6 mt-10 pt-8 border-t border-hero-green/10">
-            <div class="flex -space-x-3">
+          <div class="flex items-center justify-start gap-6 mt-10 pt-8 border-t border-hero-green/10">
+            <div class="flex -space-x-3 shrink-0">
               <div v-for="avatar in heroAvatars" :key="avatar" class="w-10 h-10 rounded-full border-2 border-white bg-gray-100 overflow-hidden shadow-sm">
                 <NuxtImg :src="avatar" width="40" height="40" class="w-full h-full object-cover" />
               </div>

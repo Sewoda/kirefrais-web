@@ -7,22 +7,22 @@
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
       <!-- Left: Logo & Menu Button (Mobile) -->
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 sm:gap-4 shrink-0">
         <button 
           @click="isMenuOpen = !isMenuOpen"
-          class="inline-flex items-center justify-center p-2 rounded-xl text-gray-400 hover:bg-gray-50 hover:text-primary transition-all md:hidden"
+          class="inline-flex items-center justify-center p-2 rounded-xl text-gray-400 hover:bg-gray-50 hover:text-primary transition-all md:hidden shrink-0"
           aria-expanded="false"
         >
           <span class="sr-only">Ouvrir le menu</span>
           <Icon :name="isMenuOpen ? 'heroicons:x-mark' : 'heroicons:bars-3-bottom-left'" class="w-6 h-6" />
         </button>
 
-        <NuxtLink to="/" class="flex items-center gap-2 group">
-          <div class="relative">
-            <AppLogo class="h-9 w-auto transform group-hover:scale-110 transition-transform duration-300" />
+        <NuxtLink to="/" class="flex items-center gap-2 group shrink-0">
+          <div class="relative shrink-0">
+            <AppLogo class="h-8 md:h-9 w-auto transform group-hover:scale-110 transition-transform duration-300" />
             <div class="absolute -top-1 -right-1 w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
           </div>
-          <span class="font-display font-black text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-dark">
+          <span class="font-display font-black text-lg md:text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-dark shrink-0">
             Kirefrais
           </span>
         </NuxtLink>
@@ -49,7 +49,7 @@
       </nav>
 
       <!-- Right: Actions -->
-      <div class="flex items-center gap-2 sm:gap-4">
+      <div class="flex items-center gap-2 sm:gap-4 ml-auto shrink-0">
         <!-- Search (Optional/Future) -->
         <button class="hidden sm:flex p-2 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-xl transition-all">
           <Icon name="heroicons:magnifying-glass" class="w-5 h-5" />
@@ -58,7 +58,7 @@
         <!-- Cart -->
         <button
           @click="cartStore.open = true"
-          class="relative group p-2 text-gray-600 hover:text-primary transition-all rounded-xl hover:bg-primary/5"
+          class="relative group p-2 text-gray-600 hover:text-primary transition-all rounded-xl hover:bg-primary/5 shrink-0"
         >
           <Icon name="heroicons:shopping-bag" class="w-6 h-6" />
           <Transition name="scale-bounce">
@@ -78,9 +78,9 @@
         <template v-if="isLoggedIn">
           <NuxtLink
             to="/profil"
-            class="flex items-center gap-3 p-1 pl-1 bg-gray-50 hover:bg-gray-100 rounded-full border border-gray-100 transition-all group"
+            class="flex items-center gap-3 p-1 pl-1 bg-gray-50 hover:bg-gray-100 rounded-full border border-gray-100 transition-all group shrink-0"
           >
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-primary-light flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white">
+            <div class="w-8 h-8 md:w-8 md:h-8 w-7 h-7 rounded-full bg-gradient-to-tr from-primary to-primary-light flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white">
               {{ userInitial }}
             </div>
             <span class="hidden lg:block text-xs font-bold text-gray-700 pr-3">{{ user?.name?.split(' ')[0] }}</span>
@@ -90,14 +90,14 @@
         <template v-else>
           <NuxtLink
             to="/auth/connexion"
-            class="hidden sm:block text-gray-500 hover:text-primary text-sm font-bold px-4 py-2 transition-colors"
+            class="hidden sm:block text-gray-500 hover:text-primary text-sm font-bold px-4 py-2 transition-colors shrink-0"
           >
             Connexion
           </NuxtLink>
           <NuxtLink
             to="/auth/inscription"
-            class="bg-primary hover:bg-primary-dark text-white text-xs font-black uppercase tracking-widest
-                   px-5 py-2.5 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95"
+            class="bg-primary hover:bg-primary-dark text-white text-[10px] sm:text-xs font-black uppercase tracking-widest
+                   px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95 shrink-0"
           >
             S'inscrire
           </NuxtLink>
