@@ -24,7 +24,7 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-  css: ['~/assets/css/main.css'],
+  css: ['app/assets/css/main.css'],
 
   googleFonts: {
     families: {
