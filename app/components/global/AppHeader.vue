@@ -29,7 +29,7 @@
       </div>
 
       <!-- Center: Desktop Nav -->
-      <nav class="hidden md:flex items-center bg-gray-50/50 rounded-2xl px-2 py-1 border border-gray-100/50">
+      <nav class="hidden md:flex items-center  ">
         <NuxtLink
           v-for="link in navigationLinks"
           :key="link.to"
@@ -50,10 +50,7 @@
 
       <!-- Right: Actions -->
       <div class="flex items-center gap-2 sm:gap-4 ml-auto shrink-0">
-        <!-- Search (Optional/Future) -->
-        <button class="hidden sm:flex p-2 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-xl transition-all">
-          <Icon name="heroicons:magnifying-glass" class="w-5 h-5" />
-        </button>
+
 
         <!-- Cart -->
         <button
@@ -124,34 +121,25 @@
                 $route.path === link.to ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-900 hover:bg-gray-50'
               ]"
             >
-              <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center" :class="$route.path === link.to ? 'bg-white/20' : 'bg-gray-100'">
-                  <Icon :name="link.icon || 'heroicons:chevron-right'" class="w-5 h-5" />
-                </div>
-                {{ link.label }}
+              <div class="flex items-center gap-3 relative z-10">
+                <Icon v-if="link.icon" :name="link.icon" class="w-5 h-5 opacity-70" />
+                <span class="font-semibold text-sm">{{ link.label }}</span>
               </div>
-              <Icon name="heroicons:arrow-right" class="w-5 h-5 opacity-50" />
             </NuxtLink>
             
             <div class="pt-8 border-t border-gray-100 mt-8">
                <div class="grid grid-cols-2 gap-4">
-                  <NuxtLink 
+                   <NuxtLink 
                     to="/profil" 
                     @click="isMenuOpen = false"
                     class="flex flex-col items-center justify-center p-6 rounded-3xl bg-gray-50 hover:bg-gray-100 transition-all gap-2"
                   >
-                    <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-                      <Icon name="heroicons:user" class="w-6 h-6 text-primary" />
-                    </div>
                     <span class="text-xs font-bold text-gray-900">Mon Profil</span>
                   </NuxtLink>
                   <button 
                     @click="isMenuOpen = false; navigateTo('/catalogue')"
                     class="flex flex-col items-center justify-center p-6 rounded-3xl bg-secondary/5 hover:bg-secondary/10 transition-all gap-2"
                   >
-                    <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-                      <Icon name="heroicons:fire" class="w-6 h-6 text-secondary" />
-                    </div>
                     <span class="text-xs font-bold text-gray-900">Promos</span>
                   </button>
                </div>
@@ -172,9 +160,9 @@ const isScrolled = ref(false)
 const userInitial = computed(() => user.value?.name?.charAt(0).toUpperCase() ?? '')
 
 const navigationLinks = [
-  { label: 'Catalogue', to: '/catalogue', icon: 'heroicons:rectangle-group' },
-  { label: 'Comment ça marche', to: '/a-propos', icon: 'heroicons:light-bulb' },
-  { label: 'FAQ', to: '/faq', icon: 'heroicons:question-mark-circle' },
+  { label: 'Catalogue', to: '/catalogue' },
+  { label: 'Abonnements', to: '/abonnements' },
+  { label: 'Comment ça marche', to: '/a-propos' },
   { label: 'Assistant IA', to: '/assistant', icon: 'heroicons:sparkles' }
 ]
 

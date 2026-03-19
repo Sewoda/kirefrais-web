@@ -164,6 +164,13 @@ async function handleLogin() {
   }
 }
 
-function loginWithGoogle()   { toast.info('Redirection vers Google...') }
-function loginWithFacebook() { toast.info('Redirection vers Facebook...') }
+const config = useRuntimeConfig()
+
+function loginWithGoogle() {
+  window.location.href = `${config.public.apiBase}/auth/google/redirect`
+}
+
+function loginWithFacebook() {
+  window.location.href = `${config.public.apiBase}/auth/facebook/redirect`
+}
 </script>

@@ -158,8 +158,11 @@
           />
         </button>
       </form>
-      <p class="text-xs text-gray-400 mt-2 text-center">
+      <!-- <p class="text-xs text-gray-400 mt-2 text-center">
         KirefraisBot peut faire des erreurs. Consultez un professionnel pour des conseils médicaux.
+      </p> -->
+      <p class="text-xs text-primary/70 mt-2 text-center font-medium">
+        KirefraisBot est votre allié expert pour une alimentation équilibrée et savoureuse au quotidien.
       </p>
     </div>
 

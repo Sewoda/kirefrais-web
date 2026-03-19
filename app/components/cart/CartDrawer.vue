@@ -45,6 +45,39 @@
             </div>
 
             <div v-else class="space-y-8">
+              <!-- Pack Header (Subscription) -->
+              <div v-if="cartStore.selectedPack" class="bg-primary/10 p-5 rounded-2xl border border-primary/20 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
+                   <button @click="cartStore.clearPack()" class="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline">Annuler le pack</button>
+                </div>
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0">
+                    <Icon name="heroicons:star-solid" class="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-gray-900 leading-none mb-1">{{ cartStore.selectedPack.name }}</h3>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-primary">{{ cartStore.selectedPack.portions }} portions · {{ cartStore.selectedPack.kits }} kits</p>
+                  </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="space-y-2">
+                  <div class="flex justify-between text-[9px] font-bold uppercase tracking-widest">
+                    <span :class="cartStore.isPackLimitReached ? 'text-green-600' : 'text-gray-500'">
+                      {{ cartStore.isPackLimitReached ? 'Box complète !' : 'Remplissez votre box' }}
+                    </span>
+                    <span class="text-gray-900">{{ cartStore.count }} / {{ cartStore.selectedPack.kits }}</span>
+                  </div>
+                  <div class="h-2 bg-white rounded-full overflow-hidden border border-gray-100">
+                    <div 
+                      class="h-full bg-primary transition-all duration-500"
+                      :style="{ width: `${(cartStore.count / cartStore.selectedPack.kits) * 100}%` }"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cart Items -->
               <div 
                 v-for="item in cartStore.items" 
                 :key="`${item.kitId}-${item.portions}`"
@@ -85,13 +118,15 @@
                       </span>
                       <button 
                         @click="cartStore.updateQty(item.kitId, item.portions, item.quantity + 1)"
-                        class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-primary transition-all"
+                        :disabled="cartStore.selectedPack && cartStore.isPackLimitReached"
+                        class="w-6 h-6 flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        :class="cartStore.selectedPack && cartStore.isPackLimitReached ? 'text-gray-300' : 'text-gray-400 hover:text-primary'"
                       >
                         <Icon name="heroicons:plus" class="w-3 h-3" />
                       </button>
                     </div>
                     <span class="font-sans font-extrabold text-gray-900 text-sm">
-                      {{ format(item.unitPrice * item.quantity) }}
+                      {{ cartStore.selectedPack ? 'Inclus' : format(item.unitPrice * item.quantity) }}
                     </span>
                   </div>
                 </div>
@@ -103,7 +138,7 @@
           <div v-if="!cartStore.isEmpty" class="px-6 py-8 border-t border-gray-100 space-y-6 bg-white">
             <div class="flex flex-col gap-3">
               <div class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
-                <span>Sous-total</span>
+                <span>{{ cartStore.selectedPack ? 'Prix du Pack' : 'Sous-total' }}</span>
                 <span class="text-gray-900 font-sans tracking-normal font-extrabold text-sm">{{ format(cartStore.subtotal) }}</span>
               </div>
               <div class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
@@ -124,10 +159,11 @@
 
             <button 
               @click="goToCheckout"
+              :disabled="cartStore.selectedPack && !cartStore.isPackLimitReached"
               class="w-full bg-secondary hover:bg-secondary-dark text-white py-4.5 rounded-xl text-base font-bold transition-all
-                     flex items-center justify-center gap-3 shadow-md hover:shadow-lg active:scale-95"
+                     flex items-center justify-center gap-3 shadow-md hover:shadow-lg active:scale-95 disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none"
             >
-              Commander
+              {{ cartStore.selectedPack && !cartStore.isPackLimitReached ? 'Complétez votre box' : 'Continuer' }}
               <Icon name="heroicons:arrow-right" class="w-5 h-5" />
             </button>
           </div>

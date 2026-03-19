@@ -88,7 +88,7 @@
 
                      <!-- Address Text -->
                      <div class="sm:col-span-2 relative group">
-                       <textarea v-model="form.address_text" required id="address" rows="3" class="peer w-full bg-gray-50 border-b-2 border-primary/20 rounded-t-lg px-4 py-6 text-sm font-bold text-gray-900 focus:outline-none focus:border-primary transition-all resize-none" placeholder=" "></textarea>
+                       <textarea v-model="form.address_text" minlength="3" required id="address" rows="3" class="peer w-full bg-gray-50 border-b-2 border-primary/20 rounded-t-lg px-4 py-6 text-sm font-bold text-gray-900 focus:outline-none focus:border-primary transition-all resize-none" placeholder=" "></textarea>
                        <label for="address" class="absolute left-4 top-6 text-gray-400 text-sm font-bold pointer-events-none transition-all peer-focus:-top-2 peer-focus:text-[10px] peer-focus:text-primary peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:text-primary">
                          ADRESSE EXACTE
                        </label>
@@ -312,7 +312,7 @@ function selectAddress(address: any) {
   // The API might return deliveryZone (camelCase) or delivery_zone (snake_case)
   const zone = address.deliveryZone || address.delivery_zone
   if (zone) {
-    cartStore.deliveryFee = zone.delivery_fee
+    cartStore.deliveryFee = Number(zone.delivery_fee) || 0
     cartStore.zoneId = zone.id
   }
 }
@@ -320,6 +320,11 @@ function selectAddress(address: any) {
 async function saveAddress() {
   if (!form.delivery_zone_id) {
     toast.error('Veuillez sélectionner une zone de livraison.')
+    return
+  }
+  
+  if (String(form.address_text).trim().length < 3) {
+    toast.error('L\'adresse exacte doit comporter au moins 3 caractères.')
     return
   }
   

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full py-4 md:py-8">
+  <div class="w-full py-4">
     <div class="max-w-3xl mx-auto px-2 sm:px-4">
       <div class="relative flex items-center justify-between">
         <!-- Progress Line Background -->

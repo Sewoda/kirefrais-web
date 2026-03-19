@@ -1,23 +1,22 @@
 <template>
   <div class="max-w-5xl mx-auto py-8">
-    <!-- Header -->
-    <!-- <div class="mb-6">
-      <div class="flex items-center gap-3 mb-2">
-        <div class="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center">
-          <Icon name="heroicons:sparkles" class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h1 class="font-display font-bold text-2xl md:text-3xl text-gray-900">
-            Assistant <span class="text-primary">KirefraisBot</span>
-          </h1>
-          <p class="text-gray-500 text-sm">
-            Conseils nutrition, recettes étape par étape, recommandations de kits.
-          </p>
-        </div>
+    <div class="mb-8 text-center lg:text-left">
+      <div class="inline-flex items-center gap-3 mb-4 bg-primary/5 px-4 py-2 rounded-2xl border border-primary/10">
+        <Icon name="heroicons:sparkles" class="w-5 h-5 text-primary" />
+        <span class="text-primary font-bold text-sm">Assistant Culinaire</span>
       </div>
-    </div> -->
+      <h1 class="font-display font-black text-3xl md:text-4xl text-gray-900 mb-2">
+        Kirefrais<span class="text-primary">Bot</span>
+      </h1>
+      <p class="text-gray-500 text-base max-w-2xl">
+        Votre compagnon intelligent pour une alimentation saine : conseils nutritionnels, recettes sur mesure et recommandations personnalisées.
+      </p>
+    </div>
 
-    <div class="grid lg:grid-cols-[260px_1fr] gap-6 h-[75vh]">
+    <div 
+      class="grid gap-6 h-[75vh]"
+      :class="isLoggedIn ? 'lg:grid-cols-[260px_1fr]' : 'grid-cols-1'"
+    >
       <template v-if="isLoggedIn">
         <!-- Historique (sidebar) -->
         <aside class="hidden lg:flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">

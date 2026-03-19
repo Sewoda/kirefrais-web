@@ -20,19 +20,20 @@
           </p>
           <div class="flex flex-col sm:flex-row flex-wrap justify-start gap-4">
             <NuxtLink
-              to="/catalogue"
+              to="/abonnements"
               class="w-full sm:w-auto bg-hero-green hover:bg-hero-green-dark text-white font-bold
-                     px-8 py-4 rounded-xl transition-all duration-300 shadow-xl shadow-hero-green/20 hover:-translate-y-1 active:scale-95 text-center"
+                     px-8 py-4 rounded-xl transition-all duration-300 shadow-xl shadow-hero-green/20 hover:-translate-y-1 active:scale-95 text-center flex items-center justify-center gap-2"
             >
-              Découvrir nos kits
+              <Icon name="heroicons:star-solid" class="w-5 h-5" />
+              Nos Abonnements
             </NuxtLink>
             <NuxtLink
               to="/assistant"
-              class="w-full sm:w-auto bg-white border-2 border-secondary/20 text-secondary hover:border-secondary
-                     font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:bg-secondary/5 text-center flex items-center justify-center gap-2"
+              class="w-full sm:w-auto bg-white border-2 border-hero-green/20 text-hero-green hover:border-hero-green
+                     font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:bg-hero-green/5 text-center flex items-center justify-center gap-2"
             >
               <Icon name="heroicons:sparkles" class="w-5 h-5" />
-              Essayer notre IA
+              Assistant Cuisine
             </NuxtLink>
           </div>
           
@@ -118,13 +119,13 @@
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               <div class="absolute bottom-4 left-6 text-white font-display text-5xl font-black opacity-40">01</div>
             </div>
-            <div class="p-8 relative -mt-8 bg-white rounded-t-3xl text-center">
+            <NuxtLink to="/abonnements" class="p-8 relative -mt-8 bg-white rounded-t-3xl text-center block hover:bg-gray-50 transition-colors">
               <div class="w-16 h-16 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 -mt-16 relative z-10 group-hover:-translate-y-2 transition-transform duration-300">
                 <Icon name="heroicons:cursor-arrow-rays" class="w-8 h-8 text-hero-orange" />
               </div>
               <h3 class="font-display font-bold text-xl text-gray-900 mb-3">Personnalisez votre plan</h3>
               <p class="text-gray-500 text-sm leading-relaxed">Choisissez les plats locaux ou internationaux qui vous font envie parmi notre large menu hebdomadaire.</p>
-            </div>
+            </NuxtLink>
           </div>
 
           <!-- Step 2 -->
@@ -255,6 +256,9 @@
       </div>
     </section>
 
+    <!-- Pricing / Subscription Section -->
+    <PricingSection />
+
     <!-- Testimonials -->
     <section class="py-24 relative overflow-hidden">
       <!-- Background Image -->
@@ -315,6 +319,7 @@
 
 <script setup lang="ts">
 import { toast } from 'vue-sonner'
+import PricingSection from '~/components/subscription/PricingSection.vue'
 import KitCard   from '~/components/catalog/KitCard.vue'
 import type { Kit } from '~/types/kit'
 

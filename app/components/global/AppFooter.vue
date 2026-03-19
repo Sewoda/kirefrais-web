@@ -29,7 +29,7 @@
         <ul class="space-y-3 text-sm text-indigo-100/70">
           <li><NuxtLink to="/catalogue" class="hover:text-white transition-colors">Nos kits repas</NuxtLink></li>
           <li><NuxtLink to="/a-propos" class="hover:text-white transition-colors">Comment ça marche</NuxtLink></li>
-          <li><NuxtLink to="/profil/abonnements" class="hover:text-white transition-colors">Abonnements</NuxtLink></li>
+          <li><NuxtLink to="/abonnements" class="hover:text-white transition-colors">Abonnements</NuxtLink></li>
           <li><NuxtLink to="/faq" class="hover:text-white transition-colors">FAQ</NuxtLink></li>
         </ul>
       </div>

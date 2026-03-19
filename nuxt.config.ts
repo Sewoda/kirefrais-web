@@ -12,6 +12,10 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
   ],
 
+  nitro: {
+    preset: 'netlify'
+  },
+
   icon: {
     serverBundle: {
       collections: ['heroicons']
@@ -46,7 +50,6 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
       ],
       script: [
-        { src: 'https://checkout.cinetpay.com/js/cinetpay.js' },
         { src: 'https://maps.googleapis.com/maps/api/js?libraries=places&key=' + process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY }
       ]
     }

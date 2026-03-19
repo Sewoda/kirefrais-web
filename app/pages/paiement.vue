@@ -179,20 +179,25 @@ const cartStore = useCartStore()
 const { format } = useFormatPrice()
 const { api } = useApi()
 
+const config = useRuntimeConfig()
+const { user } = useCurrentUser()
+
 const loading = ref(false)
 const orderCreated = ref(false)
-const selectedMethod = ref('flooz')
+const selectedMethod = ref('all')
 const notes = ref('')
 
 const paymentMethods = [
-  { id: 'flooz',  label: 'Moov Flooz',   desc: 'Paiement mobile',   icon: 'heroicons:device-phone-mobile' },
-  { id: 'tmoney', label: 'T-Money',      desc: 'Simple et rapide',   icon: 'heroicons:qr-code' },
-  { id: 'card',   label: 'Carte Bancaire', desc: 'Visa, Mastercard',  icon: 'heroicons:credit-card' },
+  { id: 'all',    label: 'CinetPay',     desc: 'Mobile & Carte',    icon: 'heroicons:credit-card' },
   { id: 'cash',   label: 'À la livraison', desc: 'Simple et classique', icon: 'heroicons:banknotes' },
 ]
 
 async function confirmOrder() {
   if (cartStore.isEmpty) return
+  if (!selectedMethod.value) {
+    toast.error('Veuillez choisir un mode de paiement')
+    return
+  }
 
   loading.value = true
   try {
@@ -202,25 +207,74 @@ async function confirmOrder() {
       quantity:    i.quantity
     }))
 
-    await api('/orders', {
+    // 1. Création de la commande sur l'API
+    const response = await api('/orders', {
       method: 'POST',
       body: {
         items,
         delivery_date:  cartStore.deliveryDate,
         delivery_slot:  cartStore.deliverySlot,
-        address_id:     1, // Temporary
+        address_id:     1, // À dynamiser plus tard
         payment_method: selectedMethod.value,
         notes:          notes.value,
         promo_code:     cartStore.promoCode
       }
     })
 
-    orderCreated.value = true
-    cartStore.clear()
-    toast.success('Commande enregistrée !')
+    const order = response.data || response
+
+    // 2. Gestion du paiement selon la méthode
+    if (selectedMethod.value === 'cash') {
+      orderCreated.value = true
+      cartStore.clear()
+      toast.success('Commande enregistrée !')
+    } else {
+      // Intégration CinetPay
+      if (!(window as any).CinetPay) {
+        toast.error('Erreur de chargement du module de paiement.')
+        return
+      }
+
+      const cp = (window as any).CinetPay
+      
+      cp.setConfig({
+        apikey: config.public.cinetpayApiKey,
+        site_id: config.public.cinetpaySiteId,
+        notify_url: config.public.apiBase + '/payments/webhook'
+      })
+
+      cp.getCheckout({
+        transaction_id: `KFK_${order.id}_${Date.now()}`,
+        amount: cartStore.total,
+        currency: 'XOF',
+        channels: 'ALL',
+        description: `Commande FreshKits #${order.id}`,
+        customer_name: user.value?.name || 'Client',
+        customer_surname: user.value?.name || 'KFK',
+        customer_email: user.value?.email || '',
+        customer_phone_number: user.value?.phone || '',
+        customer_address: "Lomé",
+        customer_city: "Lomé",
+        customer_country: "TG",
+        customer_state: "TG",
+        customer_zip_code: "00228"
+      })
+
+      cp.waitResponse((data: any) => {
+        if (data.status === "ACCEPTED") {
+          orderCreated.value = true
+          cartStore.clear()
+          toast.success('Paiement validé et commande confirmée ! 🎉')
+        } else if (data.status === "CANCELLED") {
+          toast.info('Paiement annulé.')
+        } else {
+          toast.error('Le paiement n\'a pas pu être validé.')
+        }
+      })
+    }
   } catch (err: any) {
-    toast.error('Erreur lors de la commande. Veuillez réessayer.')
     console.error(err)
+    toast.error(err?.data?.message || 'Erreur lors de la commande. Veuillez réessayer.')
   } finally {
     loading.value = false
   }

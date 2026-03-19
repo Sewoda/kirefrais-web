@@ -37,7 +37,7 @@
         </div>
 
         <!-- Slots List -->
-        <div class="mt-8">
+        <div >
           <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6 ml-1 leading-none">Créneaux horaires disponibles</label>
           
           <div class="relative min-h-[300px]">
@@ -71,7 +71,7 @@
           </div>
         </div>
 
-        <div class="flex justify-center mt-12 pb-12 sm:pb-0">
+        <div class="flex justify-center pb-12 sm:pb-0">
           <button 
             @click="goToNext"
             :disabled="!cartStore.deliveryDate || !cartStore.deliverySlot"
@@ -109,8 +109,8 @@ const availableDays = computed(() => {
   const days = []
   const today = dayjs().startOf('day')
   
-  // Generate next 7 days starting from tomorrow
-  for (let i = 1; i <= 7; i++) {
+  // Generate next 7 days starting from today
+  for (let i = 0; i < 7; i++) {
     const d = today.add(i, 'day')
     days.push({
       date:      d.format('YYYY-MM-DD'),

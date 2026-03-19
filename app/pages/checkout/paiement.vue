@@ -127,23 +127,42 @@
                 </div>
               </div>
 
-              <div class="flex justify-between items-center mb-8">
-                <span class="font-display font-bold text-gray-900 uppercase tracking-widest text-xs">A régler</span>
-                <span class="font-sans text-3xl font-black text-primary leading-none">{{ format(cartStore.total) }}</span>
+              <!-- Total Box -->
+              <div class="bg-primary/5 rounded-[1.5rem] p-5 border border-primary/10 flex justify-between items-center mb-10 shadow-sm relative group">
+                <div class="flex flex-col">
+                  <span class="font-display font-black text-gray-900 uppercase tracking-[0.2em] text-[10px] leading-none mb-1 opacity-60">Total</span>
+                </div>
+                <div class="text-right">
+                   <span class="font-sans text-xl font-black text-primary tracking-tighter leading-none block">{{ format(cartStore.total) }}</span>
+                </div>
               </div>
 
-              <button 
+               <!-- Error Message Alert -->
+               <Transition name="expand-stagger">
+                 <div v-if="paymentError" class="bg-red-50 text-red-600 p-4 rounded-2xl border border-red-100 flex items-start gap-3 mb-6 animate-shake">
+                   <Icon name="heroicons:information-circle" class="w-5 h-5 shrink-0" />
+                   <div class="flex-1">
+                      <p class="text-[10px] font-black uppercase tracking-widest mb-1">Erreur de paiement</p>
+                      <p class="text-xs font-medium leading-tight">{{ paymentError }}</p>
+                   </div>
+                   <button @click="paymentError = ''" class="text-red-300 hover:text-red-500">
+                     <Icon name="heroicons:x-mark" class="w-4 h-4" />
+                   </button>
+                 </div>
+               </Transition>
+
+               <button 
                 @click="confirmOrder"
                 :disabled="loading || !selectedMethod"
                 class="w-full relative bg-primary hover:bg-primary-dark disabled:bg-gray-200 disabled:cursor-not-allowed
-                       text-white font-bold py-5 rounded-2xl text-lg transition-all 
+                       text-white font-black py-5 rounded-2xl text-[11px] uppercase tracking-[0.2em] transition-all 
                        flex items-center justify-center active:scale-95 shadow-xl shadow-primary/20 overflow-hidden"
               >
                 <div 
                   class="flex items-center gap-3 transition-all duration-300"
                   :class="{ 'opacity-0 translate-y-4': loading }"
                 >
-                  <span>Confirmer la commande</span>
+                  <span>Confirmer </span>
                   <Icon name="heroicons:bolt" class="w-5 h-5" />
                 </div>
                 
@@ -190,6 +209,7 @@ const loading = ref(false)
 const selectedMethod = ref('flooz')
 const phoneNumber = ref('')
 const notes = ref('')
+const paymentError = ref('')
 
 const paymentMethods = [
   { id: 'flooz',  label: 'Moov Flooz',   desc: 'Paiement mobile Togo',   icon: 'heroicons:device-phone-mobile' },
@@ -200,6 +220,8 @@ const paymentMethods = [
 
 async function confirmOrder() {
   if (cartStore.isEmpty) return
+  paymentError.value = ''
+  
   if ((selectedMethod.value === 'flooz' || selectedMethod.value === 'tmoney') && !phoneNumber.value) {
     toast.error('Veuillez entrer votre numéro de téléphone.')
     return
@@ -213,7 +235,7 @@ async function confirmOrder() {
       quantity:    i.quantity
     }))
 
-    const order = await api<any>('/orders', {
+    const orderData = await api<any>('/orders', {
       method: 'POST',
       body: {
         items,
@@ -228,18 +250,27 @@ async function confirmOrder() {
       }
     })
 
+    const newOrder = orderData.order
+
+    // Handle Online Payment if needed
+    if (['flooz', 'tmoney', 'card'].includes(selectedMethod.value)) {
+      const { payWithLeekPay } = usePayment()
+      await payWithLeekPay(newOrder.id)
+      return // Redirecting to LeekPay...
+    }
+
     // Store order info for confirmation page if needed, then clear cart
-    // Using simple navigateTo for now, confirmation page will fetch or use state
     cartStore.clear()
     navigateTo({
       path: '/checkout/confirmation',
-      query: { order_id: order.id, ref: `FK-2026-${order.id}` }
+      query: { order_id: newOrder.id, ref: `FK-2026-${newOrder.id}` }
     })
     
     toast.success('Commande validée !')
   } catch (err: any) {
-    toast.error('Erreur lors du paiement. Veuillez réessayer.')
-    console.error(err)
+    console.error('Payment/Order Error:', err)
+    paymentError.value = err.data?.message || 'Une erreur est survenue lors du paiement. Veuillez réessayer.'
+    toast.error('Échec de la commande.')
   } finally {
     loading.value = false
   }
@@ -288,5 +319,16 @@ async function confirmOrder() {
 @keyframes zoom-in {
   from { transform: scale(0); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 </style>

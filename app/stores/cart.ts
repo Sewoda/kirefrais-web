@@ -10,8 +10,17 @@ export interface CartItem {
     unitPrice: number
 }
 
+interface SelectedPack {
+    id: string
+    name: string
+    kits: number
+    portions: 1 | 2 | 4
+    price: number
+}
+
 interface CartState {
     items: CartItem[]
+    selectedPack: SelectedPack | null
     deliveryDate: string | null
     deliverySlot: 'morning' | 'afternoon' | 'evening' | null
     addressId: number | null
@@ -25,6 +34,7 @@ interface CartState {
 export const useCartStore = defineStore('cart', {
     state: (): CartState => ({
         items: [],
+        selectedPack: null,
         deliveryDate: null,
         deliverySlot: null,
         addressId: null,
@@ -37,41 +47,50 @@ export const useCartStore = defineStore('cart', {
 
     getters: {
         count: (s) => s.items.reduce((acc, i) => acc + i.quantity, 0),
-        subtotal: (s) => s.items.reduce((acc, i) => acc + i.unitPrice * i.quantity, 0),
-        total(): number { 
-            const fee = this.addressId ? this.deliveryFee : 0
-            return this.subtotal + fee - this.discount 
+        subtotal: (s) => {
+            if (s.selectedPack) return s.selectedPack.price
+            return s.items.reduce((acc, i) => acc + i.unitPrice * i.quantity, 0)
         },
-        isEmpty: (s) => s.items.length === 0,
+        total(): number { 
+            const fee = this.addressId ? Number(this.deliveryFee) : 0
+            return Number(this.subtotal) + fee - Number(this.discount) 
+        },
+        isEmpty: (s) => s.items.length === 0 && !s.selectedPack,
+        isPackLimitReached: (s) => s.selectedPack ? s.items.reduce((acc, i) => acc + (i.quantity || 0), 0) >= s.selectedPack.kits : false,
+        remainingSlots: (s) => s.selectedPack ? Math.max(0, s.selectedPack.kits - s.items.reduce((acc, i) => acc + (i.quantity || 0), 0)) : 0
     },
 
     actions: {
-        add(kit: Kit, portions: 1 | 2 | 4) {
-            const priceMap = { 1: kit.prices['1p'], 2: kit.prices['2p'], 4: kit.prices['4p'] }
+        setPack(pack: SelectedPack) {
+            this.selectedPack = pack
+            this.items = [] // Reset items when choosing a new pack
+        },
+        clearPack() { this.selectedPack = null },
+
+        add(kit: Kit, portionsInput: 1 | 2 | 4) {
+            // If a pack is selected, we override portions to the pack setting
+            const portions = this.selectedPack ? this.selectedPack.portions : portionsInput
+
+            // If a pack is selected, strictly check limit
+            if (this.selectedPack && this.isPackLimitReached) {
+                return 
+            }
+
+            // Extract price from the standard interface
+            const unitPrice = kit.prices[portions === 1 ? '1p' : portions === 2 ? '2p' : '4p'] || 0
             const existing = this.items.find(i => i.kitId === kit.id && i.portions === portions)
 
             if (existing) {
                 existing.quantity++
             } else {
-                let img = '/placeholder.jpg'
-                if (Array.isArray(kit.images) && kit.images.length > 0) img = kit.images[0]
-                else if (typeof kit.images === 'string') {
-                    try {
-                        const parsed = JSON.parse(kit.images)
-                        if (Array.isArray(parsed) && parsed.length > 0) img = parsed[0]
-                    } catch {
-                        const cleaned = String(kit.images).replace(/^\[["']|["']\]$/g, '')
-                        if (cleaned && cleaned.includes('http')) img = cleaned
-                    }
-                }
-                
+                const img = kit.images && kit.images[0] ? kit.images[0] : '/placeholder.jpg'
                 this.items.push({
                     kitId: kit.id,
                     name: kit.name,
-                    image: img,
+                    image: img as string,
                     portions,
                     quantity: 1,
-                    unitPrice: priceMap[portions],
+                    unitPrice,
                 })
             }
         },
@@ -83,6 +102,11 @@ export const useCartStore = defineStore('cart', {
         updateQty(kitId: number, portions: number, qty: number) {
             const item = this.items.find(i => i.kitId === kitId && i.portions === portions)
             if (item) {
+                // If quantity is increasing, check if we still have sots
+                if (qty > item.quantity && this.selectedPack && this.isPackLimitReached) {
+                    return // Block increase
+                }
+                
                 if (qty <= 0) this.remove(kitId, portions)
                 else item.quantity = qty
             }

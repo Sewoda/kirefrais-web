@@ -41,7 +41,43 @@
       <!-- Cart Content -->
       <div v-else class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <!-- Products List -->
-        <div class="lg:col-span-8 order-1">
+        <div class="lg:col-span-8 order-1 space-y-6">
+          <!-- Subscription Pack Header -->
+          <div v-if="cartStore.selectedPack" class="bg-primary/5 rounded-[2rem] p-6 border border-primary/10 relative overflow-hidden group shadow-sm">
+             <div class="absolute top-4 right-4 group-hover:block transition-opacity">
+                <button @click="cartStore.clearPack()" class="text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:bg-white px-3 py-1 rounded-full border border-primary/20 transition-all shadow-sm">
+                  Annuler l'abonnement
+                </button>
+             </div>
+             
+             <div class="flex items-center gap-6 mb-6">
+                <div class="w-16 h-16 bg-white rounded-2xl shadow-xl shadow-primary/10 border border-primary/10 flex items-center justify-center shrink-0">
+                   <Icon name="heroicons:sparkles-solid" class="w-8 h-8 text-primary" />
+                </div>
+                <div>
+                   <h3 class="font-display font-black text-2xl text-gray-900 leading-none mb-1">{{ cartStore.selectedPack.name }}</h3>
+                   <span class="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">
+                     {{ cartStore.selectedPack.portions }} PORTIONS · {{ cartStore.selectedPack.kits }} KITS PAR SEMAINE
+                   </span>
+                </div>
+             </div>
+
+             <div class="space-y-3">
+                <div class="flex justify-between items-end">
+                   <span class="text-[10px] font-black uppercase tracking-[0.2em]" :class="cartStore.isPackLimitReached ? 'text-green-600' : 'text-gray-400'">
+                     {{ cartStore.isPackLimitReached ? 'Votre box est prête !' : 'Sélectionnez vos kits' }}
+                   </span>
+                   <span class="text-xs font-black text-gray-900 font-sans">{{ cartStore.count }} / {{ cartStore.selectedPack.kits }}</span>
+                </div>
+                <div class="h-3 bg-gray-200/50 rounded-full overflow-hidden border border-gray-100 shadow-inner">
+                   <div 
+                     class="h-full bg-primary transition-all duration-700 ease-out"
+                     :style="{ width: `${(cartStore.count / cartStore.selectedPack.kits) * 100}%` }"
+                   ></div>
+                </div>
+             </div>
+          </div>
+
           <TransitionGroup 
             name="cart-list" 
             tag="div" 
@@ -81,13 +117,15 @@
                       </Transition>
                     </div>
                     <button @click="updateQty(item, item.quantity + 1)"
-                            class="w-8 h-8 flex items-center justify-center text-gray-400 hover:bg-white hover:text-primary rounded-lg transition-all active:scale-90">
+                            :disabled="cartStore.selectedPack && cartStore.isPackLimitReached"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed"
+                            :class="cartStore.selectedPack && cartStore.isPackLimitReached ? 'text-gray-300' : 'text-gray-400 hover:bg-white hover:text-primary'">
                       <Icon name="heroicons:plus" class="w-4 h-4" />
                     </button>
                   </div>
 
                   <div class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] hidden sm:block">
-                    {{ format(item.unitPrice) }} / kit
+                    {{ cartStore.selectedPack ? 'Pack' : format(item.unitPrice) }} {{ !cartStore.selectedPack ? '/ kit' : '' }}
                   </div>
 
                    <!-- Mobile Trash -->
@@ -105,7 +143,7 @@
                 <div class="text-right" :class="{ 'animate-price-pulse': pulsingItems.has(`${item.kitId}-${item.portions}`) }">
                   <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Total</p>
                   <p class="text-xl font-sans font-black text-gray-900 leading-none">
-                    {{ format(item.unitPrice * item.quantity) }}
+                    {{ cartStore.selectedPack ? 'Inclus' : format(item.unitPrice * item.quantity) }}
                   </p>
                 </div>
                 
@@ -120,7 +158,7 @@
               <!-- Mobile Price Badge -->
               <div class="sm:hidden w-full pt-4 mt-2 border-t border-dashed border-gray-100 flex justify-between items-center">
                  <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Montant</span>
-                 <span class="text-lg font-sans font-black text-gray-900">{{ format(item.unitPrice * item.quantity) }}</span>
+                 <span class="text-lg font-sans font-black text-gray-900">{{ cartStore.selectedPack ? 'Inclus' : format(item.unitPrice * item.quantity) }}</span>
               </div>
             </div>
           </TransitionGroup>
@@ -155,13 +193,15 @@
               <!-- Totals -->
               <div class="pt-6 border-t border-gray-200 border-dashed space-y-4">
                 <div class="flex justify-between items-center">
-                  <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Articles</span>
+                  <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+                    {{ cartStore.selectedPack ? 'Tarif du Pack' : 'Articles' }}
+                  </span>
                   <span class="font-sans font-black text-gray-900 text-base">{{ format(cartStore.subtotal) }}</span>
                 </div>
                 
                 <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em]">
                   <span class="text-gray-400">Livraison</span>
-                  <span class="text-primary italic lowercase font-bold tracking-normal">Calculée ensuite</span>
+                  <span class="text-primary italic lowercase font-bold tracking-normal">Inclus</span>
                 </div>
                 
                 <Transition name="slide-down">
@@ -185,9 +225,10 @@
               <div class="pt-2">
                 <button 
                   @click="goToAddress"
-                  class="w-full bg-primary hover:bg-primary-dark text-white font-black py-5 rounded-2xl text-xs uppercase tracking-[0.2em] transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 active:scale-95 group"
+                  :disabled="cartStore.selectedPack && !cartStore.isPackLimitReached"
+                  class="w-full bg-primary hover:bg-primary-dark text-white font-black py-5 rounded-2xl text-[11px] uppercase tracking-[0.2em] transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 active:scale-95 group disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none"
                 >
-                  Valider mon panier
+                  {{ cartStore.selectedPack && !cartStore.isPackLimitReached ? 'Remplissez votre box' : 'Valider ma commande' }}
                   <Icon name="heroicons:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
