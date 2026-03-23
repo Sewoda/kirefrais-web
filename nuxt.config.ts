@@ -1,63 +1,75 @@
 export default defineNuxtConfig({
   modules: [
-    '@nuxt/eslint',
-    '@nuxt/ui',
-    '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt',
-    '@vueuse/nuxt',
-    '@nuxtjs/google-fonts',
-    '@nuxt/icon',
-    '@nuxt/image',
-    '@sidebase/nuxt-auth',
-    '@vee-validate/nuxt',
+    "@nuxt/eslint",
+    "@nuxt/ui",
+    "@pinia/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
+    "@vueuse/nuxt",
+    "@nuxtjs/google-fonts",
+    "@nuxt/icon",
+    "@nuxt/image",
+    "@sidebase/nuxt-auth",
+    "@vee-validate/nuxt",
   ],
 
   nitro: {
-    preset: 'netlify'
+    preset: "netlify",
+    prerender: {
+      crawlLinks: true,
+      routes: ["/"],
+    },
   },
 
   icon: {
     serverBundle: {
-      collections: ['heroicons']
-    }
+      collections: ["heroicons"],
+    },
   },
 
   devtools: { enabled: true },
 
-  css: ['/assets/css/main.css'],
+  css: ["~/assets/css/main.css"],
 
   googleFonts: {
     families: {
-      'Sora': [600, 700],
-      'Plus Jakarta Sans': [400, 500, 600, 700],
-      'JetBrains Mono': [400, 500],
+      Sora: [600, 700],
+      "Plus Jakarta Sans": [400, 500, 600, 700],
+      "JetBrains Mono": [400, 500],
     },
-    display: 'swap',
+    display: "swap",
     preload: true,
   },
 
   auth: {
-    baseURL: process.env.NUXT_PUBLIC_API_BASE || 'https://kirefrais-main-50gxdo.free.laravel.cloud/api',
-    provider: { type: 'local' },
+    baseURL:
+      process.env.NUXT_PUBLIC_API_BASE ||
+      "https://kirefrais-main-50gxdo.free.laravel.cloud/api",
+    provider: { type: "local" },
   },
 
   app: {
     head: {
-      title: 'Kirefrais',
+      title: "Kirefrais",
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        { rel: 'shortcut icon', href: '/favicon.ico' },
-        { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+        { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+        { rel: "shortcut icon", href: "/favicon.ico" },
+        { rel: "icon", type: "image/png", href: "/favicon.png" },
       ],
       script: [
-        { src: 'https://maps.googleapis.com/maps/api/js?libraries=places&key=' + process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY }
-      ]
-    }
+        {
+          src:
+            "https://maps.googleapis.com/maps/api/js?libraries=places&key=" +
+            process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY,
+        },
+      ],
+    },
   },
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://kirefrais-main-50gxdo.free.laravel.cloud/api',
+      apiBase:
+        process.env.NUXT_PUBLIC_API_BASE ||
+        "https://kirefrais-main-50gxdo.free.laravel.cloud/api",
       googleMapsKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY,
       pusherKey: process.env.NUXT_PUBLIC_PUSHER_KEY,
       pusherCluster: process.env.NUXT_PUBLIC_PUSHER_CLUSTER,
@@ -67,19 +79,20 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { prerender: true },
-    '/admin/**': { ssr: false },
-    '/livreur/**': { ssr: false },
+    "/": { prerender: true },
+    "/admin/**": { ssr: false },
+    "/livreur/**": { ssr: false },
+    "/**": { ssr: false },
   },
 
-  compatibilityDate: '2025-01-15',
+  compatibilityDate: "2025-01-15",
 
   eslint: {
     config: {
       stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
-      }
-    }
-  }
-})
+        commaDangle: "never",
+        braceStyle: "1tbs",
+      },
+    },
+  },
+});
